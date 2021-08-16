@@ -1,0 +1,8 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+**/credentials
+.idea
+.terraform
+.DS_store
+**/variables.tfvars
+**/terraform.tfvars
+**/.terraform.lock.hcl
