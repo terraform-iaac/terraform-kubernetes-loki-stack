@@ -118,6 +118,7 @@ variable "container_name" {
   description = "Name of the blob container used to store chunks. This container must be created before running cortex."
   default     = null
 }
+## Local storage
 variable "persistent_volume_name" {
   description = "Name of persistant volume"
   default     = null

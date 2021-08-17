@@ -121,7 +121,7 @@ Name | Description | Type | Default | Example | Required
 --- | --- | --- | --- |--- |--- 
 storage_account_name | The Microsoft Azure storage account name to be used | `string` | `null` | `aks-application-logs` | no
 storage_account_access_key | The Microsoft Azure storage account access key to use | `string` | `null` | `sEcRetKeY` | no
-container_name | Name of the blob container used to store chunks | `string` | `null` | `my-app-logs` | no
+container_name | Name of the blob container used to store chunks. This container must be created before running cortex. | `string` | `null` | `my-app-logs` | no
 ### ***Local***
 Name | Description | Type | Default | Example | Required
 --- | --- | --- | --- |--- |--- 

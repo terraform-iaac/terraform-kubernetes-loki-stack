@@ -46,6 +46,7 @@ module "azure_loki_stack" {
   provider_type              = "azure"
   storage_account_name       = "kuberneteslogging"
   storage_account_access_key = "super-secret-key"
+  container_name             = "logs"
 }
 
 # Local Loki Logging
