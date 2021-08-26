@@ -34,7 +34,7 @@ locals {
 variable "namespace" {
   description = "Namespace name"
   type        = string
-  default     = "loki-test"
+  default     = "loki-stack"
 }
 variable "create_namespace" {
   description = "Create namespace by module ? true or false"
