@@ -25,6 +25,7 @@ locals {
       template = file("${path.module}/templates/local_loki.yaml")
       vars = {
         LOCAL_STORAGE_PATH = "/data/loki/chunks"
+        RETENTION_PERIOD = var.local_storage_retention_period
       }
     }
   }
@@ -134,4 +135,8 @@ variable "pvc_access_modes" {
 variable "pvc_storage_class_name" {
   description = "Type of storage class name"
   default     = null
+}
+variable "local_storage_retention_period" {
+  description = "How far back tables will be kept before they are deleted. 0s disables deletion"
+  default     = "336h"
 }

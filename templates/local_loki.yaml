@@ -38,5 +38,5 @@ storage_config:
   filesystem:
     directory: ${LOCAL_STORAGE_PATH}
 table_manager:
-  retention_deletes_enabled: false
-  retention_period: 0s
+  retention_deletes_enabled: true
+  retention_period: ${RETENTION_PERIOD}
