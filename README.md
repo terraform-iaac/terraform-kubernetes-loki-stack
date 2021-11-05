@@ -12,6 +12,7 @@ Module supports logging to AWS s3 bucket, GCP storage, Azure blob storage and Ku
 Name | Description
 --- | --- |
 Terraform | >= v0.14.9
+Helm provider | >= 2.1.0
 Kubernetes provider | >= v1.11.1
 
 ## Usage
