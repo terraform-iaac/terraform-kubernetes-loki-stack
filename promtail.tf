@@ -53,12 +53,11 @@ module "promtail_daemonset" {
       period_seconds        = 10
       success_threshold     = 1
       timeout_seconds       = 1
-      http_get = [
-        {
-          path = "/ready"
-          port = "http-metrics"
-        }
-      ]
+      http_get = {
+        path   = "/ready"
+        port   =  var.promtail_internal_port.0.name
+        scheme = "HTTP"
+      }
     }
   ]
 

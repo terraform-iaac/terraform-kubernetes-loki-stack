@@ -30,6 +30,11 @@ module "aws_s3_loki_stack" {
   loki_service_account_annotations = {
     "eks.amazonaws.com/role-arn" = "arn:aws:iam::123456789:role/loki-logging"
   }
+  
+  loki_resources = {
+    request_cpu    = "50m"
+    request_memory = "100Mi"
+  }
 
   provider_type = "aws"
   s3_name       = "s3-bucket-loki-logs"
@@ -43,6 +48,11 @@ module "gcs_loki_stack" {
   loki_node_selector = {
     (local.node_spot_label_key)     = false
     (local.node_multi_az_label_key) = true
+  }
+  
+  promtail_resources = {
+    request_cpu    = "20m"
+    request_memory = "50Mi"
   }
 
   provider_type   = "gcp"
@@ -81,10 +91,12 @@ module "local_loki_stack" {
 
 ## Inputs
 
-Name | Description | Type | Default | Example | Required
---- | --- | --- | --- |--- |--- 
+Name | Description | Type     | Default | Example | Required
+--- | --- |----------| --- |--- |--- 
 namespace | Name of namespace where you want to deploy loki-stack | `string` | `monitoring` | n/a | no
 create_namespace | Create namespace by module? true or false | `bool` | true | n/a | no
+loki_resources | Compute Resources required by loki container. CPU/RAM requests | `map` | `{}` | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre> | no
+promtail_resources | Compute Resources required by promtail container. CPU/RAM requests | `map` | `{}` | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre> | no
 
 ### Loki variables
 Name | Description | Type | Default | Example | Required

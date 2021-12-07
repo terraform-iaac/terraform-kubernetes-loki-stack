@@ -68,23 +68,21 @@ module "loki_stateful_set" {
   # Probes
   liveness_probe = [
     {
-      http_get = [
-        {
-          path = "/ready"
-          port = var.loki_port.0.name
-        }
-      ]
+      http_get = {
+        path = "/ready"
+        port = var.loki_port.0.name
+        scheme = "HTTP"
+      }
       initial_delay_seconds = 45
     }
   ]
   readiness_probe = [
     {
-      http_get = [
-        {
-          path = "/ready"
-          port = var.loki_port.0.name
-        }
-      ]
+      http_get = {
+        path = "/ready"
+        port = var.loki_port.0.name
+        scheme = "HTTP"
+      }
       initial_delay_seconds = 45
     }
   ]
