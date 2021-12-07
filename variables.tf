@@ -25,10 +25,20 @@ locals {
       template = file("${path.module}/templates/local_loki.yaml")
       vars = {
         LOCAL_STORAGE_PATH = "/data/loki/chunks"
-        RETENTION_PERIOD = var.local_storage_retention_period
+        RETENTION_PERIOD   = var.local_storage_retention_period
       }
     }
   }
+}
+
+# Resources for services
+variable "loki_resources" {
+  description = "(Optional) Compute Resources required by loki container. CPU/RAM requests"
+  default     = {}
+}
+variable "promtail_resources" {
+  description = "(Optional) Compute Resources required by promtail container. CPU/RAM requests"
+  default     = {}
 }
 
 # Namespace

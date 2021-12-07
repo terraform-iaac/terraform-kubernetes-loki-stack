@@ -39,7 +39,7 @@ resource "kubernetes_secret" "loki" {
 # Deploy loki as stateful-set
 module "loki_stateful_set" {
   source  = "terraform-iaac/stateful-set/kubernetes"
-  version = "1.2.7"
+  version = "1.3.1"
 
   image                            = var.loki_docker_image
   name                             = var.loki_name
@@ -47,6 +47,8 @@ module "loki_stateful_set" {
   termination_grace_period_seconds = var.loki_termination_grace_period_seconds
 
   service_account_name = kubernetes_service_account.loki.metadata[0].name
+
+  resources = var.loki_resources
 
   args = ["-config.file=/etc/loki/loki.yaml"]
 
