@@ -17,7 +17,7 @@ resource "kubernetes_config_map" "promtail" {
 # Deploy per node
 module "promtail_daemonset" {
   source  = "terraform-iaac/daemonset/kubernetes"
-  version = "1.3.4"
+  version = "1.3.1"
 
   image     = var.promtail_docker_image
   name      = var.promtail_name
