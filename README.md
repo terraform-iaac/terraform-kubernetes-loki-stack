@@ -13,20 +13,20 @@ Name | Description
 --- | --- |
 Terraform | >= v0.14.9
 Helm provider | >= 2.1.0
-Kubernetes provider | >= v1.11.1
+Kubernetes provider | >= v2.1.0
 
 ## Usage
-
 ```
 # AWS s3 Loki Logging
 module "aws_s3_loki_stack" {
-  source = "git::https://github.com/terraform-iaac/terraform-kubernetes-loki-stack.git"
+  source  = "terraform-iaac/loki-stack/kubernetes"
 
   loki_node_selector = {
     (local.node_spot_label_key)     = false
     (local.node_multi_az_label_key) = true
   }
 
+  # In case if IRSA is enabled
   loki_service_account_annotations = {
     "eks.amazonaws.com/role-arn" = "arn:aws:iam::123456789:role/loki-logging"
   }
@@ -43,11 +43,16 @@ module "aws_s3_loki_stack" {
 
 # Google Cloud Storage Loki Logging
 module "gcs_loki_stack" {
-  source = "git::https://github.com/terraform-iaac/terraform-kubernetes-loki-stack.git"
+  source  = "terraform-iaac/loki-stack/kubernetes"
 
   loki_node_selector = {
     (local.node_spot_label_key)     = false
     (local.node_multi_az_label_key) = true
+  }
+  
+  # In case if Workload Identity is enabled.
+  loki_service_account_annotations = {
+    "iam.gke.io/gcp-service-account" = "loki-sa@projectid.iam.gserviceaccount.com"
   }
   
   promtail_resources = {
@@ -61,7 +66,7 @@ module "gcs_loki_stack" {
 
 # Azure Loki Logging
 module "azure_loki_stack" {
-  source = "git::https://github.com/terraform-iaac/terraform-kubernetes-loki-stack.git"
+  source  = "terraform-iaac/loki-stack/kubernetes"
 
   loki_node_selector = {
     (local.node_spot_label_key)     = false
@@ -75,7 +80,7 @@ module "azure_loki_stack" {
 
 # Local Loki Logging
 module "local_loki_stack" {
-  source = "git::https://github.com/terraform-iaac/terraform-kubernetes-loki-stack.git"
+  source  = "terraform-iaac/loki-stack/kubernetes"
 
   loki_node_selector = {
     (local.node_spot_label_key)     = false

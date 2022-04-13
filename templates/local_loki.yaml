@@ -14,6 +14,8 @@ ingester:
         store: inmemory
       replication_factor: 1
   max_transfer_retries: 0
+  wal:
+    dir: /data/wal
 limits_config:
   enforce_metric_name: false
   reject_old_samples: true

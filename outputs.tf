@@ -7,3 +7,6 @@ output "loki_service_port" {
 output "namespace" {
   value = var.namespace
 }
+output "loki_service_account_name" {
+  value = kubernetes_service_account.loki.metadata[0].name
+}

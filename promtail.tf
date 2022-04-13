@@ -55,7 +55,7 @@ module "promtail_daemonset" {
       timeout_seconds       = 1
       http_get = {
         path   = "/ready"
-        port   =  var.promtail_internal_port.0.name
+        port   = var.promtail_internal_port.0.name
         scheme = "HTTP"
       }
     }

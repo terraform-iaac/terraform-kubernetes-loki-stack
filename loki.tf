@@ -61,7 +61,7 @@ module "loki_stateful_set" {
       run_as_group              = 10001
       run_as_user               = 10001
       run_as_non_root           = true
-      read_only_root_filesystem = true
+      read_only_root_filesystem = false
     }
   ]
 
@@ -69,8 +69,8 @@ module "loki_stateful_set" {
   liveness_probe = [
     {
       http_get = {
-        path = "/ready"
-        port = var.loki_port.0.name
+        path   = "/ready"
+        port   = var.loki_port.0.name
         scheme = "HTTP"
       }
       initial_delay_seconds = 45
@@ -79,8 +79,8 @@ module "loki_stateful_set" {
   readiness_probe = [
     {
       http_get = {
-        path = "/ready"
-        port = var.loki_port.0.name
+        path   = "/ready"
+        port   = var.loki_port.0.name
         scheme = "HTTP"
       }
       initial_delay_seconds = 45

@@ -58,7 +58,7 @@ variable "loki_name" {
   default = "loki"
 }
 variable "loki_docker_image" {
-  default = "grafana/loki:2.1.0"
+  default = "grafana/loki:2.5.0"
 }
 variable "loki_termination_grace_period_seconds" {
   default = 4800
@@ -84,7 +84,7 @@ variable "promtail_name" {
   default = "promtail"
 }
 variable "promtail_docker_image" {
-  default = "grafana/promtail:2.1.0"
+  default = "grafana/promtail:2.5.0"
 }
 
 variable "promtail_internal_port" {
