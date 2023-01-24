@@ -12,14 +12,6 @@ resource "kubernetes_service_account" "loki" {
   }
 }
 
-# Generate config
-data "template_file" "loki_config" {
-  for_each = local.default
-
-  template = local.default[var.provider_type].template
-  vars     = local.default[var.provider_type].vars
-}
-
 # Add config to secret
 resource "kubernetes_secret" "loki" {
   metadata {
@@ -32,14 +24,14 @@ resource "kubernetes_secret" "loki" {
   }
 
   data = {
-    "loki.yaml" = data.template_file.loki_config[var.provider_type].rendered
+    "loki.yaml" = templatefile(local.default[var.provider_type].template, local.default[var.provider_type].vars)
   }
 }
 
 # Deploy loki as stateful-set
 module "loki_stateful_set" {
   source  = "terraform-iaac/stateful-set/kubernetes"
-  version = "1.3.1"
+  version = "1.4.2"
 
   image                            = var.loki_docker_image
   name                             = var.loki_name
@@ -124,7 +116,7 @@ module "loki_stateful_set" {
 
 module "loki_service" {
   source  = "terraform-iaac/service/kubernetes"
-  version = "1.0.3"
+  version = "1.0.4"
 
   app_name      = module.loki_stateful_set.name
   app_namespace = module.loki_stateful_set.namespace

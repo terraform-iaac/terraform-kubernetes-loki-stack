@@ -13,7 +13,7 @@ Name | Description
 --- | --- |
 Terraform | >= v0.14.9
 Helm provider | >= 2.1.0
-Kubernetes provider | >= v2.1.0
+Kubernetes provider | >= v2.0.1
 
 ## Usage
 ```

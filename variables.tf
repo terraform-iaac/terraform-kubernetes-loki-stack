@@ -1,36 +1,3 @@
-locals {
-  default = {
-    aws = {
-      template = file("${path.module}/templates/aws_loki.yaml")
-      vars = {
-        S3_REGION = var.s3_region
-        S3_NAME   = var.s3_name
-      }
-    },
-    azure = {
-      template = file("${path.module}/templates/azure_loki.yaml")
-      vars = {
-        ACCOUNT_KEY    = var.storage_account_access_key
-        ACCOUNT_NAME   = var.storage_account_name
-        CONTAINER_NAME = var.container_name
-      }
-    },
-    gcp = {
-      template = file("${path.module}/templates/gcp_loki.yaml")
-      vars = {
-        GCS_BUCKET_NAME = var.gcs_bucket_name
-      }
-    },
-    local = {
-      template = file("${path.module}/templates/local_loki.yaml")
-      vars = {
-        LOCAL_STORAGE_PATH = "/data/loki/chunks"
-        RETENTION_PERIOD   = var.local_storage_retention_period
-      }
-    }
-  }
-}
-
 # Resources for services
 variable "loki_resources" {
   description = "(Optional) Compute Resources required by loki container. CPU/RAM requests"
@@ -58,7 +25,7 @@ variable "loki_name" {
   default = "loki"
 }
 variable "loki_docker_image" {
-  default = "grafana/loki:2.5.0"
+  default = "grafana/loki:2.7.1"
 }
 variable "loki_termination_grace_period_seconds" {
   default = 4800
@@ -84,7 +51,7 @@ variable "promtail_name" {
   default = "promtail"
 }
 variable "promtail_docker_image" {
-  default = "grafana/promtail:2.5.0"
+  default = "grafana/promtail:2.7.1"
 }
 
 variable "promtail_internal_port" {
