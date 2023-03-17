@@ -31,8 +31,8 @@ module "promtail_daemonset" {
   resources = var.promtail_resources
 
   env_field = {
-      "HOSTNAME" = "spec.nodeName"
-    }
+    "HOSTNAME" = "spec.nodeName"
+  }
   internal_port = var.promtail_internal_port
 
   security_context = [

@@ -1,11 +1,11 @@
 # Kubernetes logging by Loki stack (Loki+Promtail)
 
-Terraform module for logging your kubernetes cluster resources.
+Terraform module for deploy Loki logging to your kubernetes cluster, with multi cloud storage support.
 
 ## Wokrflow
 
 Module creates all necessary resources for logging important containers inside your kubernetes cluster. Previously you need to have Grafana to see your logs. Loki is only separate Data Source for Grafana.
-Module supports logging to AWS s3 bucket, GCP storage, Azure blob storage and Kubernetes Persistent Volume.
+Module supports different storages for logs: AWS S3 bucket, GCP GCS Bucket, Azure Blob storage and Kubernetes Persistent Volume.
 
 ## Software Requirements
 
@@ -16,92 +16,71 @@ Helm provider | >= 2.1.0
 Kubernetes provider | >= v2.0.1
 
 ## Usage
+#### AWS with S3 as storage
 ```
-# AWS s3 Loki Logging
 module "aws_s3_loki_stack" {
   source  = "terraform-iaac/loki-stack/kubernetes"
 
-  loki_node_selector = {
-    (local.node_spot_label_key)     = false
-    (local.node_multi_az_label_key) = true
-  }
-
-  # In case if IRSA is enabled
+  # In case if IRSA is enabled. IRSA must have S3 RW Policy access.
+  # Otherwise, your instance must have S3 RW Policy attached.
   loki_service_account_annotations = {
     "eks.amazonaws.com/role-arn" = "arn:aws:iam::123456789:role/loki-logging"
-  }
-  
-  loki_resources = {
-    request_cpu    = "50m"
-    request_memory = "100Mi"
   }
 
   provider_type = "aws"
   s3_name       = "s3-bucket-loki-logs"
   s3_region     = "us-east-1"
 }
-
-# Google Cloud Storage Loki Logging
+```
+####  GCP with GCS as storage
+```
 module "gcs_loki_stack" {
   source  = "terraform-iaac/loki-stack/kubernetes"
-
-  loki_node_selector = {
-    (local.node_spot_label_key)     = false
-    (local.node_multi_az_label_key) = true
-  }
   
   # In case if Workload Identity is enabled.
+  # Otherwise, your node must have RW permissions to GCS.
   loki_service_account_annotations = {
     "iam.gke.io/gcp-service-account" = "loki-sa@projectid.iam.gserviceaccount.com"
   }
-  
-  promtail_resources = {
-    request_cpu    = "20m"
-    request_memory = "50Mi"
-  }
 
   provider_type   = "gcp"
-  gcs_bucket_name = "k8s-logging"
+  gcs_bucket_name = "gcs-bucket-loki-logs"
 }
-
-# Azure Loki Logging
+```
+#### Azure with Blob as storage
+```
 module "azure_loki_stack" {
   source  = "terraform-iaac/loki-stack/kubernetes"
-
-  loki_node_selector = {
-    (local.node_spot_label_key)     = false
-    (local.node_multi_az_label_key) = true
-  }
 
   provider_type              = "azure"
   storage_account_name       = "kuberneteslogging"
   storage_account_access_key = "super-secret-key"
-}
-
-# Local Loki Logging
-module "local_loki_stack" {
-  source  = "terraform-iaac/loki-stack/kubernetes"
-
-  loki_node_selector = {
-    (local.node_spot_label_key)     = false
-    (local.node_multi_az_label_key) = true
-  }
-
-  provider_type          = "local"
-  persistent_volume_name = kubernetes_persistent_volume.test.metadata.0.name
-  persistent_volume_size = "4Gi" // We recommend to use a bit smaller value than Persistent Volume have (example: current_PV*0.9)
+  container_name             = "logs"
 }
 ```
-### Note: ***provider_type*** support only ***aws, azure, gcp or local*** value. Every value require own variables (see ***locals*** section in varaibles.tf file)
+
+#### PV local as storage
+```
+module "pv_local_loki_stack" {
+  source = "terraform-iaac/loki-stack/kubernetes"
+
+  provider_type          = "local"
+  pvc_storage_class_name = "default"
+  pvc_access_modes       = ["ReadWriteOnce"]
+  persistent_volume_name = kubernetes_persistent_volume.pv_loki.metadata.0.name
+  persistent_volume_size = "4Gi"
+}
+```
+### Note: ***provider_type*** supports only ***aws, azure, gcp or local*** value. Every value require own variables (see ***locals*** section in varaibles.tf file or check examples.)
 
 ## Inputs
 
-Name | Description | Type     | Default | Example | Required
---- | --- |----------| --- |--- |--- 
-namespace | Name of namespace where you want to deploy loki-stack | `string` | `monitoring` | n/a | no
-create_namespace | Create namespace by module? true or false | `bool` | true | n/a | no
-loki_resources | Compute Resources required by loki container. CPU/RAM requests | `map` | `{}` | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre> | no
-promtail_resources | Compute Resources required by promtail container. CPU/RAM requests | `map` | `{}` | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre> | no
+Name | Description | Type     | Default                                                                       | Example | Required
+--- | --- |----------|-------------------------------------------------------------------------------|--- |--- 
+namespace | Name of namespace where you want to deploy loki-stack | `string` | `monitoring`                                                                  | n/a | no
+create_namespace | Create namespace by module? true or false | `bool` | true                                                                          | n/a | no
+loki_resources | Compute Resources required by loki container. CPU/RAM requests | `map` | <pre>{<br>   request_cpu    = "50m"<br>   request_memory = "100Mi"<br>}</pre> | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre> | no
+promtail_resources | Compute Resources required by promtail container. CPU/RAM requests | `map` | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre>  | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre> | no
 
 ### Loki variables
 Name | Description | Type | Default | Example | Required
@@ -125,7 +104,7 @@ Name | Description | Type | Default | Example | Required
 --- | --- | --- | --- |--- |--- 
 provider_type | Choose what type of provider you want (aws, azure, gcp and local) | `string` | n/a | `azure` | yes
 
-### ***AWS s3***
+### ***AWS S3***
 Name | Description | Type | Default | Example | Required
 --- | --- | --- | --- |--- |--- 
 s3_region | AWS region where s3 locate | `string` | `null` | `us-east-1` | no

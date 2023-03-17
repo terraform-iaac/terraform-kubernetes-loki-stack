@@ -1,11 +1,33 @@
 # Resources for services
 variable "loki_resources" {
   description = "(Optional) Compute Resources required by loki container. CPU/RAM requests"
-  default     = {}
+  type = object(
+    {
+      request_cpu    = optional(string)
+      request_memory = optional(string)
+      limit_cpu      = optional(string)
+      limit_memory   = optional(string)
+    }
+  )
+  default = {
+    request_cpu    = "50m"
+    request_memory = "100Mi"
+  }
 }
 variable "promtail_resources" {
   description = "(Optional) Compute Resources required by promtail container. CPU/RAM requests"
-  default     = {}
+  type = object(
+    {
+      request_cpu    = optional(string)
+      request_memory = optional(string)
+      limit_cpu      = optional(string)
+      limit_memory   = optional(string)
+    }
+  )
+  default = {
+    request_cpu    = "20m"
+    request_memory = "50Mi"
+  }
 }
 
 # Namespace
@@ -22,12 +44,15 @@ variable "create_namespace" {
 
 # Loki
 variable "loki_name" {
+  type    = string
   default = "loki"
 }
 variable "loki_docker_image" {
-  default = "grafana/loki:2.7.1"
+  type    = string
+  default = "grafana/loki:2.7.4"
 }
 variable "loki_termination_grace_period_seconds" {
+  type    = number
   default = 4800
 }
 variable "loki_port" {
@@ -48,10 +73,12 @@ variable "loki_service_account_annotations" {
 
 # Promtail
 variable "promtail_name" {
+  type    = string
   default = "promtail"
 }
 variable "promtail_docker_image" {
-  default = "grafana/promtail:2.7.1"
+  type    = string
+  default = "grafana/promtail:2.7.4"
 }
 
 variable "promtail_internal_port" {
@@ -71,49 +98,60 @@ variable "provider_type" {
 # Storage variables
 ## AWS
 variable "s3_region" {
+  type        = string
   description = "AWS region where s3 locate"
   default     = null
 }
 variable "s3_name" {
+  type        = string
   description = "Name of s3 bucket"
   default     = null
 }
 ## GCP
 variable "gcs_bucket_name" {
+  type        = string
   description = "Google Cloud Storage bucket name"
   default     = null
 }
 ## Azure
 variable "storage_account_name" {
+  type        = string
   description = "The Microsoft Azure storage account name to be used"
   default     = null
 }
 variable "storage_account_access_key" {
+  type        = string
   description = "The Microsoft Azure storage account access key to use"
   default     = null
 }
 variable "container_name" {
+  type        = string
   description = "Name of the blob container used to store chunks. This container must be created before running cortex."
   default     = null
 }
 ## Local storage
 variable "persistent_volume_name" {
+  type        = string
   description = "Name of persistant volume"
   default     = null
 }
 variable "persistent_volume_size" {
+  type        = string
   description = "Name of persistant disk size"
   default     = null
 }
 variable "pvc_access_modes" {
+  type        = list(string)
   description = "Mode for access to data"
   default     = null
 }
 variable "pvc_storage_class_name" {
+  type        = string
   description = "Type of storage class name"
   default     = null
 }
 variable "local_storage_retention_period" {
+  type        = string
   description = "How far back tables will be kept before they are deleted. 0s disables deletion"
   default     = "336h"
 }
