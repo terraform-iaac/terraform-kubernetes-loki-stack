@@ -23,12 +23,15 @@ module "promtail_daemonset" {
   name      = var.promtail_name
   namespace = var.create_namespace ? kubernetes_namespace.namespace[0].id : var.namespace
 
-  args = ["-config.file=/etc/promtail/promtail.yaml", "-client.url=http://${module.loki_service.name}:3100/loki/api/v1/push"]
+  args = [
+    "-config.file=/etc/promtail/promtail.yaml", "-client.url=http://${module.loki_service.name}:3100/loki/api/v1/push"
+  ]
 
   service_account_name  = kubernetes_service_account.promtail.metadata[0].name
   service_account_token = true
 
-  resources = var.promtail_resources
+  resources  = var.promtail_resources
+  toleration = var.promtail_toleration
 
   env_field = {
     "HOSTNAME" = "spec.nodeName"
@@ -50,7 +53,7 @@ module "promtail_daemonset" {
       period_seconds        = 10
       success_threshold     = 1
       timeout_seconds       = 1
-      http_get = {
+      http_get              = {
         path   = "/ready"
         port   = var.promtail_internal_port.0.name
         scheme = "HTTP"

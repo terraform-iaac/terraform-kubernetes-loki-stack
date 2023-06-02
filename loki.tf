@@ -45,6 +45,7 @@ module "loki_stateful_set" {
   args = ["-config.file=/etc/loki/loki.yaml"]
 
   node_selector = var.loki_node_selector
+  toleration = var.loki_toleration
   internal_port = var.loki_port
 
   security_context = [

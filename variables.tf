@@ -67,6 +67,9 @@ variable "loki_port" {
 variable "loki_node_selector" {
   default = null
 }
+variable "loki_toleration" {
+  default = []
+}
 variable "loki_service_account_annotations" {
   default = {}
 }
@@ -88,6 +91,10 @@ variable "promtail_internal_port" {
       internal_port = "3101"
     }
   ]
+}
+
+variable "promtail_toleration" {
+  default = []
 }
 
 

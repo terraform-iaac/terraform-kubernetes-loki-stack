@@ -83,21 +83,23 @@ loki_resources | Compute Resources required by loki container. CPU/RAM requests 
 promtail_resources | Compute Resources required by promtail container. CPU/RAM requests | `map` | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre>  | <pre>{<br>   request_cpu    = "20m"<br>   request_memory = "50Mi"<br>}</pre> | no
 
 ### Loki variables
-Name | Description | Type | Default | Example | Required
---- | --- | --- | --- |--- |--- 
-loki_name | Loki application name | `string` | `loki` | n/a | no
-loki_docker_image | Image for Loki container | `string` | `grafana/loki:2.3.0` | n/a | no
-loki_termination_grace_period_seconds | Grace period applies to the total time it takes for both the PreStop hook to execute and for the Container to stop normally | `integer` | `4800` | n/a | no
-loki_port | Port mapping to kubernetes service | <pre>list(object({<br>    name          = string<br>    internal_port = integer<br>    external_port = integer<br>}))</pre> | <pre>\[<br>  {<br>    name          = "http-metrics"<br>    internal_port = 3100<br>    external_port = 3100<br>  }<br>]</pre> | n/a | no 
-loki_node_selector | Select node to deploy loki stack | `map` | `null` | <pre>{<br>    (local.node_spot_label_key)     = false<br>    (local.node_multi_az_label_key) = true<br>}</pre> | no
-loki_service_account_annotations | Add additional account annotations to Loki service account | `map` | `ReadWriteMany` | n/a | no
+Name | Description                                                                                                                 | Type | Default                                                                                                                        | Example | Required
+--- |-----------------------------------------------------------------------------------------------------------------------------| --- |--------------------------------------------------------------------------------------------------------------------------------|--- |--- 
+loki_name | Loki application name                                                                                                       | `string` | `loki`                                                                                                                         | n/a | no
+loki_docker_image | Image for Loki container                                                                                                    | `string` | `grafana/loki:2.3.0`                                                                                                           | n/a | no
+loki_termination_grace_period_seconds | Grace period applies to the total time it takes for both the PreStop hook to execute and for the Container to stop normally | `integer` | `4800`                                                                                                                         | n/a | no
+loki_port | Port mapping to kubernetes service                                                                                          | <pre>list(object({<br>    name          = string<br>    internal_port = integer<br>    external_port = integer<br>}))</pre> | <pre>\[<br>  {<br>    name          = "http-metrics"<br>    internal_port = 3100<br>    external_port = 3100<br>  }<br>]</pre> | n/a | no 
+loki_node_selector | Select node to deploy loki stack                                                                                            | `map` | `null`                                                                                                                         | <pre>{<br>    (local.node_spot_label_key)     = false<br>    (local.node_multi_az_label_key) = true<br>}</pre> | no
+loki_toleration | Loki Pod node tolerations                                                                                                   | <pre>list(object({<br>    effect             = string // (Optional)<br>    key                = string // (Optional)<br>    operator           = string // (Optional)<br>    toleration_seconds = number // (Optional)<br>    value              = string // (Optional)<br>  }))</pre>   | `[]` | <pre>[<br>  {<br>    effect             = "NoSchedule"<br>    key                = "gpu"<br>    operator           = "Equal"<br>    value              = "true"<br>  }<br>]</pre>    | no |
+loki_service_account_annotations | Add additional account annotations to Loki service account                                                                  | `map` | `ReadWriteMany`                                                                                                                | n/a | no
 
 ### Promtail
-Name | Description | Type | Default | Example | Required
---- | --- | --- | --- |--- |--- 
-promtail_name | Promtail application name | `string` | `monitoring-alertmanager-pv` | n/a | no
-promtail_docker_image | Image for Promtail container | `string` | `2Gi` | n/a | no
-promtail_internal_port | Port mapping to daemon-set | <pre>list(object({<br>    name          = string<br>    internal_port = integer<br>}))</pre> | <pre>\[<br>  {<br>    name          = "http-metrics"<br>    internal_port = 3100<br>  }<br>]</pre> | n/a | no
+Name | Description                   | Type | Default | Example | Required
+--- |-------------------------------| --- | --- |--- |--- 
+promtail_name | Promtail application name     | `string` | `monitoring-alertmanager-pv` | n/a | no
+promtail_docker_image | Image for Promtail container  | `string` | `2Gi` | n/a | no
+promtail_internal_port | Port mapping to daemon-set    | <pre>list(object({<br>    name          = string<br>    internal_port = integer<br>}))</pre> | <pre>\[<br>  {<br>    name          = "http-metrics"<br>    internal_port = 3100<br>  }<br>]</pre> | n/a | no
+promtail_toleration | Promtail pod node tolerations | <pre>list(object({<br>    effect             = string // (Optional)<br>    key                = string // (Optional)<br>    operator           = string // (Optional)<br>    toleration_seconds = number // (Optional)<br>    value              = string // (Optional)<br>  }))</pre>   | `[]` | <pre>[<br>  {<br>    effect             = "NoSchedule"<br>    key                = "gpu"<br>    operator           = "Equal"<br>    value              = "true"<br>  }<br>]</pre>    | no |
 
 ### Storage variables
 Name | Description | Type | Default | Example | Required
